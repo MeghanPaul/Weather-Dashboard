@@ -74,9 +74,9 @@ var displayHistory = function() {
 var loadHistory = function() {
     if(localStorage.getItem(0) == null)
     {
-        localStorage.setItem(0,"lawrence");
-        searchHistory[0] = "lawrence";
-        fetchData("lawrence");
+        localStorage.setItem(0,"Lawrence");
+        searchHistory[0] = "Lawrence";
+        fetchData("Lawrence");
     }else {
         for(var i = 0; i < 10; i++)
         {
@@ -151,7 +151,7 @@ var displayData = function(object,cityName) {
         windspd = object.daily[i].wind_speed;
 
         $("#date"+i).text(date.toLocaleDateString("en-US"));
-        $("#temp"+i).text("High: " + tempMax + "°F Low: " + tempMin + "°F" );
+        $("#temp"+i).text("High/Low: " + tempMax + "°F/" + tempMin + "°F" );
         $("#icon"+i).attr("src",icon);
         $("#humidity"+i).text("Humidity: " + humidity + "%");
         $("#windspd"+i).text("Wind Speed: " + windspd + "mph");

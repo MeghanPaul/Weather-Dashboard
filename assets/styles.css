@@ -1,4 +1,46 @@
+:root {
+    --light-grey: #E8EEF4;
+    --darkest-blue: #1A4DA9;
+    --button-blue: #7aa9d3;
+    --weather-background: #B0DCF5;
+    --dailies-background: #2f98df;
+    --header-background: #B0DCF5;
+    --off-white: rgb(223, 223, 223);
+}
+
+header {
+    background-color: var(--header-background);
+}
+
+h1 {
+    border-bottom: 3px solid black;
+    width: 500px;
+}
+
 .row {
     margin: 0;
     padding: 0;
+}
+
+.sidebar {
+    background-color: var(--light-grey);
+}
+
+.dark-blue-font {
+    color: var(--darkest-blue);
+}
+
+.btn {
+    background-color: var(--dailies-background);
+    color: var(--off-white);
+    font-weight: bold;
+}
+
+.weather {
+    background-color: var(--weather-background);
+}
+
+.dailies {
+    background-color: var(--dailies-background);
+    color:var(--off-white);
 }
