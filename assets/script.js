@@ -3,6 +3,9 @@ var APIkey = "7149d24085fc99cfe92b53fad41fb72f";
 var cityNameEl = document.querySelector("#city");
 var cityFormEl = document.querySelector("#city-search");
 
+var searchHistory = [];
+
+//Handles search input
 var formSubmitHandler = function(event) {
     //prevents page from refreshing
     event.preventDefault();
@@ -10,36 +13,109 @@ var formSubmitHandler = function(event) {
     var city = cityNameEl.value.trim();
 
     if(city) {
-        try {
-            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIkey}`)
-            .then(response=>response.json())
-            .then(json=>{
-                console.log(json);
-                var lat = json.coord.lat;
-                var lon = json.coord.lon;
-                var name = json.name;
-                try {
-                    fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely,alerts&appid=${APIkey}&units=imperial`)
-                    .then(response=>response.json())
-                    .then(json=>{
-                        console.log(json);
-                        displayData(json,name);
-                    });
-                }catch(error)
-                {
-                    console.log(error);
-                }
-                
-            });
-        }catch(error)
-        {
-            console.log(error);        
-        }
+        addToHistory(city);
+        fetchData(city);
     }else {
         alert("Please enter a city");
     }
 }
 
+//adds new search to the history array
+var addToHistory = function(city) {
+    if(searchHistory.length > 1)
+    {
+        for(var i = searchHistory.length-1; i >= 0; i--)
+        {
+            //move search history down, limit to 10
+            searchHistory[i+1] = searchHistory[i];
+        }
+        searchHistory[0] = city;
+
+        if(searchHistory.length > 10)
+        {
+            searchHistory[10] = null;
+        }
+    }else{
+        searchHistory[1] = searchHistory[0];
+        searchHistory[0] = city;
+    }
+
+    //saves updated history to local storage
+    for(var i = 0; i < searchHistory.length; i++)
+    {
+        if(searchHistory[i] == null){
+            localStorage.removeItem(i);
+        }else {
+        localStorage.setItem(i,searchHistory[i]);
+        }
+    }
+
+    displayHistory();
+
+}
+
+//displays search history
+var displayHistory = function() {
+    for(var i = 0; i < 10; i++)
+    {
+        if(searchHistory[i]==null)
+        {
+            $("#hist"+i).css("visbility","hidden");
+        }else{
+            $("#hist"+i).text(searchHistory[i]);
+        }
+    }
+}
+
+//loads history from local storage
+//called on page load only
+var loadHistory = function() {
+    if(localStorage.getItem(0) == null)
+    {
+        localStorage.setItem(0,"lawrence");
+        searchHistory[0] = "lawrence";
+        fetchData("lawrence");
+    }else {
+        for(var i = 0; i < 10; i++)
+        {
+            searchHistory[i] = localStorage.getItem(i);
+        }
+        console.log(searchHistory);
+        fetchData(searchHistory[0]);
+    }
+    displayHistory();
+}
+
+//fetches data from open weather API about city
+var fetchData = function(city) {
+    try {
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIkey}`)
+        .then(response=>response.json())
+        .then(json=>{
+            console.log(json);
+            var lat = json.coord.lat;
+            var lon = json.coord.lon;
+            var name = json.name;
+            try {
+                fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely,alerts&appid=${APIkey}&units=imperial`)
+                .then(response=>response.json())
+                .then(json=>{
+                    console.log(json);
+                    displayData(json,name);
+                });
+            }catch(error)
+            {
+                console.log(error);
+            }
+            
+        });
+    }catch(error)
+    {
+        console.log(error);        
+    }
+}
+
+//displays data from JSON city object to weather dashboard
 var displayData = function(object,cityName) {
     var temp;
     var date;
@@ -66,4 +142,6 @@ var displayData = function(object,cityName) {
         $("#windspd"+i).text("Wind Speed: " + windspd + "mph");
     }
 }
+
+loadHistory();
 cityFormEl.addEventListener("submit",formSubmitHandler);
