@@ -13,6 +13,7 @@ var formSubmitHandler = function(event) {
     var city = cityNameEl.value.trim();
 
     if(city) {
+        cityNameEl.value = "";
         addToHistory(city);
         fetchData(city);
     }else {
@@ -63,6 +64,7 @@ var displayHistory = function() {
             $("#hist"+i).css("visibility","hidden");
         }else{
             $("#hist"+i).text(searchHistory[i]);
+            $("#hist"+i).css("visibility","visible");
         }
     }
 }
