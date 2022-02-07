@@ -60,7 +60,7 @@ var displayHistory = function() {
     {
         if(searchHistory[i]==null)
         {
-            $("#hist"+i).css("visbility","hidden");
+            $("#hist"+i).css("visibility","hidden");
         }else{
             $("#hist"+i).text(searchHistory[i]);
         }
@@ -124,7 +124,20 @@ var displayData = function(object,cityName) {
     var windspd;
     var uvi = object.daily[0].uvi;
     $("#city-name").text(cityName);
-    $("#uvi").text("UV Index: " + uvi);
+    $("#uvi span").text(uvi);
+
+    var currentSpanClass = $("#uvi span").attr("class");
+
+    if(uvi >= 8)
+    {
+        $("#uvi span").attr("class","p-1 bg-danger");
+    }else if(uvi >= 3)
+    {
+        $("#uvi span").attr("class","p-1 bg-warning");
+    }else 
+    {
+        $("#uvi span").attr("class","p-1 bg-success");
+    }
 
     for(var i = 0; i < 6; i++)
     {
@@ -142,6 +155,10 @@ var displayData = function(object,cityName) {
         $("#windspd"+i).text("Wind Speed: " + windspd + "mph");
     }
 }
+
+$(".search-history").on("click","button",function() {
+    fetchData($(this).text());
+});
 
 loadHistory();
 cityFormEl.addEventListener("submit",formSubmitHandler);
